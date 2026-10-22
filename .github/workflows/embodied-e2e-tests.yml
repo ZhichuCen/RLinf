@@ -409,7 +409,10 @@ jobs:
           unset PYTHONPATH
           export REPO_PATH=$(pwd)
           source .venv/bin/activate
-          bash tests/e2e_tests/embodied/run.sh realworld_dual_yam_collect_data_mock
+          # Isolate LeRobot output from earlier runs on this self-hosted runner.
+          COLLECTION_LOG_PATH=$(mktemp -d "${RUNNER_TEMP}/dual-yam-collect.XXXXXX")
+          bash tests/e2e_tests/embodied/run.sh realworld_dual_yam_collect_data_mock \
+            runner.logger.log_path="${COLLECTION_LOG_PATH}"
 
       - name: Dual-YAM OpenPI Pi05 mock-robot evaluation test
         timeout-minutes: 20
